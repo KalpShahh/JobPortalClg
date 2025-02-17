@@ -1,24 +1,34 @@
-const express = require("express");
-const dotenv=require("dotenv")
-dotenv.config({});
-require('./dbConfig')
+import express from "express";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import userRoutes from "./routes/userroute.js";  
+import companyRoutes from "./routes/companyroutes.js"
+import jobRoute from "./routes/jobroute.js"
+import applicationRoute from "./routes/applicationroute.js"
+import './dbConfig.js';
+dotenv.config();  
 
-const cookie = require("cookie-parser");
-const corss = require("cors");
 const app = express();
-const corsoptions = {
-  origin: "https://localhost:5173",
-  credentials: true,
+
+
+const corsOptions = {
+  origin: "https://localhost:5173",  
+  credentials: true,  
 };
 
+// Middleware
+app.use(cookieParser());  
+app.use(cors(corsOptions));  
+app.use(express.json());  
+app.use(express.urlencoded({ extended: true }));  
 
-
-app.use(cookie());
-app.use(corss(corsoptions));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const PORT=process.env.PORT || 3000;
+// Routes
+app.use("/user", userRoutes);  
+app.use("company",companyRoutes);
+app.use("job",jobRoute);
+app.use("application",applicationRoute)
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`port is run on ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
